@@ -6,67 +6,77 @@ import time
 import logging
 CONF_PATH=['/etc/default']
 
+
 def usage():
   print 'confset conffile.parameter=value'
   sys.exit(1)
+
  
-def search_for_conf(conffile):
-  global CONF_PATH
-  filename=None
-  for dir in CONF_PATH:
-    filename=os.path.join(dir,conffile)
-    if os.path.isfile(filename):
-      break
-    else: 
-      filename=None
-  return filename
 
-def available_settings(conffile,filter=None,help=False):
-  filename=search_for_conf(conffile)
-  comments=[]
-  if filename:
-    fh=open(filename,'r')
-    for line in fh.readlines():
-      line=line.strip()
-      if line:
-        if line.startswith('#'):
-          comments.append(line.strip('#'))
+
+class conf_settings:
+  def __init__(self,conffile):
+    self.conffile=conffile
+    self.filename=self.search_for_conf(conffile)
+    self.settings,self.order = self.available_settings()
+    self.__dict__.update(self.settings)
+    
+  def search_for_conf(self,conffile):
+    global CONF_PATH
+    filename=None
+    for dir in CONF_PATH:
+      filename=os.path.join(dir,conffile)
+      if os.path.isfile(filename):
+        break
+      else: 
+        filename=None
+    return filename
+
+  def available_settings(self):
+    comments=[]
+    order=[]
+    settings={}
+    if self.filename:
+      fh=open(self.filename,'r')
+      for line in fh.readlines():
+        line=line.strip()
+        if line:
+          if line.startswith('#'):
+            temp=line.strip('#').strip()
+            if temp:
+              comments.append(temp)
+          else:
+            if '=' in line:
+              setting='%s.%s' % (self.conffile,line.split('=')[0])
+              settings[setting] = {'help':comments,'value':'='.join(line.split('=')[1:]).strip()}
+              comments=[]
+              order.append(setting)
         else:
-          if '=' in line:
-            if not filter or line.split('=')[0] == filter:
-              setting='%s.%s' % (conffile,line.split('=')[0])
-              print '%s%s' % (setting,' - '+comments[0] if comments else "")
-              if help and len(comments) > 1:
-                print (' '*(len(setting)+3)).join(comments[1:])
-            comments=[]
-      else:
-        comments=[]
-        
-args=''.join(sys.argv[1:])
+          comments=[]
+    return settings,order
+    
+  def print_settings(self,filter=None,sort=False):
+    if sort:
+      temp=self.settings.keys()
+      temp.sort()
+    else:
+      temp=self.order
+    max_len=0
+    for setting in temp:
+      if len(setting)+len(self.settings[setting]['value'])+1 > max_len:
+        max_len=len(setting)+len(self.settings[setting]['value'])+1
+    for setting in temp:
+      if not filter or setting == filter:
+        setting_and_value='%s=%s' % (setting,self.settings[setting]['value'])
+        print '%s - %s' % (setting_and_value.ljust(max_len,' '),self.settings[setting]['help'][0] if self.settings[setting]['help'] else '')
+        for line in self.settings[setting]['help'][1:]:
+          print '%s   %s' % ((' '*max_len),line)
 
-if args:
-  if '.' not in args:
-    available_settings(args)
-  else:
-    conffile=args.split('.')[0]
-    filter=args.split('.')[1]
-    available_settings(conffile,filter,help=True)
-  sys.exit(0)
-
-if '.' not in args:
-  usage()
-      
-conffile=args.split('.')[0]
-key=''.join(args.split('.')[1:]).split('=')[0].strip()
-value=''.join(args.split('.')[1:]).split('=')[1].strip()
-filename=search_for_conf(conffile)
-
-if filename:
-  shutil.copy(filename,'%s.confset.%s' % (filename,time.strftime("%Y%m%d%H%M%S")))
-  data=open(filename,'r').readlines()
-  changed=False    
-  if '=' in args:
-    fh=open(filename,'w')
+  def set(self,key,value):        
+    shutil.copy(self.filename,'%s.confset.%s' % (self.filename,time.strftime("%Y%m%d%H%M%S")))
+    data=open(self.filename,'r').readlines()
+    changed=False    
+    fh=open(self.filename,'w')
     for line in data:
       if not line.strip().startswith('#') and '=' in line:
         tkey=line.strip().split('=')[0].strip()
@@ -78,4 +88,30 @@ if filename:
     if changed == False:
       fh.write('%s=%s\n' % (key,value))
     fh.close()
+       
+args=' '.join(sys.argv[1:])
+filter=None
+
+if args:
+  if '.' not in args:
+    configs=conf_settings(args)
+  else:
+    conffile=args.split('.')[0]
+    filter=args.split('.')[1]
+    configs=conf_settings(conffile)
+else:
+  usage()
+  
+if '=' not in args:
+  configs.print_settings(filter=filter)
+  sys.exit(0)
+  
+if '.' not in args:
+  usage()
+      
+key=''.join(args.split('.')[1:]).split('=')[0].strip()
+value=''.join(args.split('.')[1:]).split('=')[1].strip()
+configs.set(key,value)
+sys.exit(0)
+
     
