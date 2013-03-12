@@ -10,7 +10,7 @@ See the settings their current values for the kerneloops daemon
     $ confset kerneloops
     kerneloops.enabled=0 - Whether the daemon should be started at boot time.
                            Set to 1 to start.
-$
+    $
 
 Enable the kerneeloops daemon
 -------
