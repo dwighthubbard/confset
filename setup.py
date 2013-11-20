@@ -18,7 +18,7 @@ from distutils.core import setup
 
 setup(
   name="confset",
-  version="0.0.2",
+  version="0.0.3",
   author="Dwight Hubbard",
   author_email="d@d-h.us",
   url="http://computing.dwighthubbard.info",
@@ -27,5 +27,5 @@ setup(
   scripts=['bin/confset'],
   long_description=open('README.md').read(),
   description="A simple script to change or update package configurations",
-  requires=['django'],
+  #requires=[],
 )

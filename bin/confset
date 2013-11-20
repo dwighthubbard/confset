@@ -1,37 +1,43 @@
 #!/usr/bin/env python
+"""
+View and Set configuration file parameters
+"""
 import sys
-import os
-import shutil
-import time
-import logging
-from confset import *
+import confset
+
 
 def usage():
-  print 'confset conffile.parameter=value'
-  sys.exit(1)
-       
-args=' '.join(sys.argv[1:])
-filter=None
+    """
+    Display a usage message and exit
+    :return:
+    """
+    print('confset conffile.parameter=value')
+    sys.exit(1)
+
+
+args = ' '.join(sys.argv[1:])
+setting_filter = None
 
 if args:
-  if '.' not in args:
-    configs=conf_settings(args)
-  else:
-    conffile=args.split('.')[0]
-    filter=args.split('.')[1]
-    configs=conf_settings(conffile)
+    if '.' not in args:
+        configs = confset.ConfigSettings(args)
+    else:
+        conffile = args.split('.')[0]
+        setting_filter = args.split('.')[1]
+        configs = confset.ConfigSettings(conffile)
 else:
-  usage()
-  
+    usage()
+
 if '=' not in args:
-  configs.print_settings(filter=filter)
-  sys.exit(0)
-  
+    #noinspection PyUnboundLocalVariable
+    configs.print_settings(setting_filter=setting_filter)
+    sys.exit(0)
+
 if '.' not in args:
-  usage()
-      
-key=''.join(args.split('.')[1:]).split('=')[0].strip()
-value='.'.join(args.split('.')[1:]).split('=')[1].strip()
-configs.set(key,value)
+    usage()
+
+key = ''.join(args.split('.')[1:]).split('=')[0].strip()
+value = '.'.join(args.split('.')[1:]).split('=')[1].strip()
+#noinspection PyUnboundLocalVariable
+configs.set(key, value)
 sys.exit(0)
-    
