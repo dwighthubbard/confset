@@ -7,7 +7,9 @@ import shutil
 import time
 import logging
 
+
 CONF_PATH = ['/etc/default', '/etc/sysconfig']
+METADATA_DIR = '/etc/confset'
 
 
 class ConfigSettings(object):
@@ -27,7 +29,6 @@ class ConfigSettings(object):
         Search for a configuration file
         :return:
         """
-        global CONF_PATH
         filename = None
         for d in CONF_PATH:
             filename = os.path.join(d, conffile)
