@@ -7,6 +7,11 @@ import configobj
 
 
 def generate_empty_configuration(filename):
+    """
+    Generate an empty configuration metadata object
+    :param filename:
+    :return:
+    """
     config = configobj.ConfigObj()
     config.filename = filename
 
@@ -26,6 +31,10 @@ def generate_empty_configuration(filename):
 
 
 def generate_example_configuration(filename):
+    """
+    Generate an example configuration file
+    :param filename:
+    """
     config = generate_empty_configuration(filename)
     config['package_info'] = {
         'package_name': 'example',

@@ -24,9 +24,11 @@ class ConfigSettings(object):
         self.settings, self.order = self.available_settings()
         self.__dict__.update(self.settings)
 
+    # noinspection PyMethodMayBeStatic
     def search_for_conf(self, conffile):
         """
         Search for a configuration file
+        :param conffile:
         :return:
         """
         filename = None
@@ -46,7 +48,7 @@ class ConfigSettings(object):
         """
         comments = []
         order = []
-        settings = {}
+        result_settings = {}
         if self.filename:
             fh = open(self.filename, 'r')
             for line in fh.readlines():
@@ -59,14 +61,19 @@ class ConfigSettings(object):
                     else:
                         if '=' in line:
                             setting = '%s.%s' % (self.conffile, line.split('=')[0])
-                            settings[setting] = {'help': comments, 'value': '='.join(line.split('=')[1:]).strip()}
+                            result_settings[setting] = {
+                                'help': comments, 'value': '='.join(line.split('=')[1:]).strip()}
                             comments = []
                             order.append(setting)
                 else:
                     comments = []
-        return settings, order
+        return result_settings, order
 
     def key_max_column_width(self):
+        """
+        Determine the max length of the key names
+        :return:
+        """
         max_len = 1
         for setting in self.settings.keys():
             if len(setting) + len(self.settings[setting]['value']) + 1 > max_len:
@@ -76,6 +83,8 @@ class ConfigSettings(object):
     def print_settings(self, setting_filter=None, sort=False, key_column_width=None, info=None):
         """
         Print the current settings
+        :param info:
+        :param key_column_width:
         :param setting_filter:
         :param sort:
         """
@@ -84,7 +93,6 @@ class ConfigSettings(object):
             temp.sort()
         else:
             temp = self.order
-        max_len = 0
         if key_column_width:
             max_len = key_column_width
         else:
@@ -119,6 +127,7 @@ class ConfigSettings(object):
         for line in data:
             if not line.strip().startswith('#') and '=' in line:
                 tkey = line.strip().split('=')[0].strip()
+                # noinspection PyUnusedLocal
                 tvalue = line.strip().split('=')[1].strip()
                 if key == tkey:
                     line = '%s=%s\n' % (key, value)
@@ -130,6 +139,11 @@ class ConfigSettings(object):
 
 
 def config_files():
+    """
+
+
+    :return:
+    """
     files = []
     for directory in CONF_PATH:
         if os.path.isdir(directory):
@@ -138,26 +152,36 @@ def config_files():
 
 
 def settings():
+    """
+
+
+    :return:
+    """
     all_settings = {}
-    for file in config_files():
+    for f in config_files():
         try:
-            conf = ConfigSettings(os.path.basename(file))
+            conf = ConfigSettings(os.path.basename(f))
         except IOError as exc:
-            logger.debug('Got %s while getting config settings for', os.path.basename(file))
+            logger.debug('Got %s while getting config settings for %s', exc, os.path.basename(f))
             continue
         s, o = conf.available_settings()
         all_settings.update(s)
     return all_settings
 
 
-def print_settings(setting_filter=None, width=132, info=False):
+def print_settings(setting_filter=None, info=False):
+    """
+
+    :param setting_filter:
+    :param info:
+    """
     configs = []
     max_width = 1
-    for file in config_files():
+    for f in config_files():
         try:
-            conf = ConfigSettings(os.path.basename(file))
+            conf = ConfigSettings(os.path.basename(f))
         except IOError as exc:
-            logger.debug('Got %s while getting config settings for', os.path.basename(file))
+            logger.debug('Got %s while getting config settings for %s', exc, os.path.basename(f))
             continue
         if conf.key_max_column_width() > max_width:
             max_width = conf.key_max_column_width()

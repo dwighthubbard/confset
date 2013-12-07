@@ -1,4 +1,7 @@
 #!/usr/bin/python
+"""
+Package configuration for confset module and utility
+"""
 from distutils.core import setup
 #noinspection PyStatementEffect
 """
