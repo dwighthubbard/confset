@@ -18,7 +18,7 @@ class ConfigSettings(object):
     :param conffile:
     """
 
-    def __init__(self, conffile):
+    def __init__(self, conffile=None):
         self.conffile = conffile
         self.filename = self.search_for_conf(conffile)
         self.settings, self.order = self.available_settings()
@@ -66,7 +66,14 @@ class ConfigSettings(object):
                     comments = []
         return settings, order
 
-    def print_settings(self, setting_filter=None, sort=False):
+    def key_max_column_width(self):
+        max_len = 1
+        for setting in self.settings.keys():
+            if len(setting) + len(self.settings[setting]['value']) + 1 > max_len:
+                max_len = len(setting) + len(self.settings[setting]['value']) + 1
+        return max_len
+
+    def print_settings(self, setting_filter=None, sort=False, key_column_width=None, info=None):
         """
         Print the current settings
         :param setting_filter:
@@ -78,20 +85,26 @@ class ConfigSettings(object):
         else:
             temp = self.order
         max_len = 0
+        if key_column_width:
+            max_len = key_column_width
+        else:
+            max_len = self.key_max_column_width()
+
         for setting in temp:
-            if len(setting) + len(self.settings[setting]['value']) + 1 > max_len:
-                max_len = len(setting) + len(self.settings[setting]['value']) + 1
-        for setting in temp:
-            if not setting_filter or setting == setting_filter:
+            if not setting_filter or setting == setting_filter.strip():
                 setting_and_value = '%s=%s' % (setting, self.settings[setting]['value'])
-                print(
-                    '%s - %s' % (
-                        setting_and_value.ljust(max_len, ' '),
-                        self.settings[setting]['help'][0] if self.settings[setting]['help'] else ''
+                if info and self.settings[setting]['help']:
+                    print(
+                        '%s - %s' % (
+                            setting_and_value.ljust(max_len, ' '),
+                            self.settings[setting]['help'][0] if self.settings[setting]['help'] else ''
+                        )
                     )
-                )
-                for line in self.settings[setting]['help'][1:]:
-                    print('%s   %s' % ((' ' * max_len), line))
+                    for line in self.settings[setting]['help'][1:]:
+                        print('%s   %s' % ((' ' * max_len), line))
+                else:
+                    if self.settings[setting]['value']:
+                        print(setting_and_value)
 
     def set(self, key, value):
         """
@@ -114,3 +127,40 @@ class ConfigSettings(object):
         if not changed:
             fh.write('%s=%s\n' % (key, value))
         fh.close()
+
+
+def config_files():
+    files = []
+    for directory in CONF_PATH:
+        if os.path.isdir(directory):
+            files += os.listdir(directory)
+    return files
+
+
+def settings():
+    all_settings = {}
+    for file in config_files():
+        try:
+            conf = ConfigSettings(os.path.basename(file))
+        except IOError as exc:
+            logger.debug('Got %s while getting config settings for', os.path.basename(file))
+            continue
+        s, o = conf.available_settings()
+        all_settings.update(s)
+    return all_settings
+
+
+def print_settings(setting_filter=None, width=132, info=False):
+    configs = []
+    max_width = 1
+    for file in config_files():
+        try:
+            conf = ConfigSettings(os.path.basename(file))
+        except IOError as exc:
+            logger.debug('Got %s while getting config settings for', os.path.basename(file))
+            continue
+        if conf.key_max_column_width() > max_width:
+            max_width = conf.key_max_column_width()
+        configs.append(conf)
+    for conf in configs:
+        conf.print_settings(setting_filter=setting_filter, key_column_width=max_width, info=info)
