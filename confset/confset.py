@@ -7,9 +7,9 @@ import shutil
 import time
 import logging
 
-
 CONF_PATH = ['/etc/default', '/etc/sysconfig']
 METADATA_DIR = '/etc/confset'
+logger = logging.getLogger(__name__)
 
 
 class ConfigSettings(object):
