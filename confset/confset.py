@@ -33,17 +33,25 @@ class ConfigSettings(object):
         """
         filename = None
         for d in CONF_PATH:
-            filename = os.path.join(d, conffile)
+            filename = os.path.join(d, self.conffile)
             if os.path.isfile(filename):
                 break
             else:
                 filename = None
         return filename
 
+    def empty_conf_file(self):
+        """
+        Return a fully filename
+        :return:
+        """
+        for d in CONF_PATH:
+            if os.path.isdir(d):
+                return os.path.join(d, self.conffile)
+
     def available_settings(self):
         """
         Return the settings available in a conf file
-
         :return:
         """
         comments = []
@@ -118,10 +126,15 @@ class ConfigSettings(object):
         """
         Set a setting in a conf file
         :param key:
-        :param value:
+        :param value
         """
-        shutil.copy(self.filename, '%s.confset.%s' % (self.filename, time.strftime("%Y%m%d%H%M%S")))
-        data = open(self.filename, 'r').readlines()
+        if not self.filename:
+            self.filename = self.empty_conf_file()
+        if os.path.exists(self.filename):
+            shutil.copy(self.filename, '%s.confset.%s' % (self.filename, time.strftime("%Y%m%d%H%M%S")))
+            data = open(self.filename, 'r').readlines()
+        else:
+            data = []
         changed = False
         fh = open(self.filename, 'w')
         for line in data:
@@ -153,8 +166,7 @@ def config_files():
 
 def settings():
     """
-
-
+    Return all settings as a dictionary
     :return:
     """
     all_settings = {}
