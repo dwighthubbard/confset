@@ -43,7 +43,10 @@ def generate_example_configuration(filename):
 
     config['crontab']['example'] = '* * * * * example_command'
 
-    config['configuration_templates']['/etc/example.file'] = {'template_type': 'jinja', 'source_file': 'example.jinja'}
+    config['configuration_templates']['/etc/example.file'] = {
+        'template_type': 'jinja',
+        'source_file': 'example.jinja'
+    }
     config.write()
 
 
