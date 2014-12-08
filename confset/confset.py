@@ -171,6 +171,7 @@ class ConfigSettings(object):
             fh.write(line)
         if not changed:
             fh.write('%s=%s\n' % (key, value))
+            self.settings.update({key: value})
         fh.close()
 
 
