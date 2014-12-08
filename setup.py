@@ -21,7 +21,7 @@ from distutils.core import setup
 
 setup(
     name="confset",
-    version="0.0.9",
+    version="0.0.32",
     author="Dwight Hubbard",
     author_email="d@d-h.us",
     url="http://computing.dwighthubbard.info",
