@@ -3,13 +3,19 @@
 Manage package settings
 """
 import os
+import sys
 import shutil
 import time
 import logging
 
+
 CONF_PATH = ['/etc/default', '/etc/sysconfig']
 METADATA_DIR = '/etc/confset'
 logger = logging.getLogger(__name__)
+
+
+class ConfsetException(Exception):
+    pass
 
 
 class ConfigSettings(object):
@@ -19,6 +25,18 @@ class ConfigSettings(object):
     """
 
     def __init__(self, conffile=None):
+        global CONF_PATH
+        self.confpath = CONF_PATH
+        self.in_virtualenv = False
+        if hasattr(sys, 'real_prefix') and 'VIRTUAL_ENV' in os.environ.keys():
+            self.in_virtualenv = True
+            self.confpath.insert(
+                0,
+                os.path.join(
+                    os.environ['VIRTUAL_ENV'],
+                    'conf'
+                )
+            )
         self.conffile = conffile
         self.filename = self.search_for_conf(conffile)
         self.settings, self.order = self.available_settings()
@@ -32,7 +50,7 @@ class ConfigSettings(object):
         :return:
         """
         filename = None
-        for d in CONF_PATH:
+        for d in self.confpath:
             filename = os.path.join(d, self.conffile)
             if os.path.isfile(filename):
                 break
@@ -45,9 +63,12 @@ class ConfigSettings(object):
         Return a fully filename
         :return:
         """
-        for d in CONF_PATH:
-            if os.path.isdir(d):
+        for d in self.confpath:
+            if os.path.isdir(d) and os.access(d, os.W_OK):
                 return os.path.join(d, self.conffile)
+        raise ConfsetException(
+            'Unable to find a writable configuration directory'
+        )
 
     def available_settings(self):
         """
@@ -68,9 +89,12 @@ class ConfigSettings(object):
                             comments.append(temp)
                     else:
                         if '=' in line:
-                            setting = '%s.%s' % (self.conffile, line.split('=')[0])
+                            setting = '%s.%s' % (
+                                self.conffile, line.split('=')[0])
                             result_settings[setting] = {
-                                'help': comments, 'value': '='.join(line.split('=')[1:]).strip()}
+                                'help': comments,
+                                'value': '='.join(line.split('=')[1:]).strip()
+                            }
                             comments = []
                             order.append(setting)
                 else:
@@ -85,10 +109,14 @@ class ConfigSettings(object):
         max_len = 1
         for setting in self.settings.keys():
             if len(setting) + len(self.settings[setting]['value']) + 1 > max_len:
-                max_len = len(setting) + len(self.settings[setting]['value']) + 1
+                max_len = len(setting) + len(
+                    self.settings[setting]['value']) + 1
         return max_len
 
-    def print_settings(self, setting_filter=None, sort=False, key_column_width=None, info=None):
+    def print_settings(
+            self, setting_filter=None, sort=False, key_column_width=None,
+            info=None
+    ):
         """
         Print the current settings
         :param info:
@@ -101,6 +129,7 @@ class ConfigSettings(object):
             temp.sort()
         else:
             temp = self.order
+
         if key_column_width:
             max_len = key_column_width
         else:
@@ -108,7 +137,10 @@ class ConfigSettings(object):
 
         for setting in temp:
             if not setting_filter or setting == setting_filter.strip():
-                setting_and_value = '%s=%s' % (setting, self.settings[setting]['value'])
+                setting_and_value = '%s=%s' % (
+                    setting,
+                    self.settings[setting]['value']
+                )
                 if info and self.settings[setting]['help']:
                     print(
                         '%s - %s' % (
@@ -131,7 +163,9 @@ class ConfigSettings(object):
         if not self.filename:
             self.filename = self.empty_conf_file()
         if os.path.exists(self.filename):
-            shutil.copy(self.filename, '%s.confset.%s' % (self.filename, time.strftime("%Y%m%d%H%M%S")))
+            shutil.copy(self.filename, '%s.confset.%s' % (
+                self.filename, time.strftime("%Y%m%d%H%M%S"))
+            )
             data = open(self.filename, 'r').readlines()
         else:
             data = []
@@ -174,7 +208,11 @@ def settings():
         try:
             conf = ConfigSettings(os.path.basename(f))
         except IOError as exc:
-            logger.debug('Got %s while getting config settings for %s', exc, os.path.basename(f))
+            logger.debug(
+                'Got %s while getting config settings for %s',
+                exc,
+                os.path.basename(f)
+            )
             continue
         s, o = conf.available_settings()
         all_settings.update(s)
@@ -193,10 +231,17 @@ def print_settings(setting_filter=None, info=False):
         try:
             conf = ConfigSettings(os.path.basename(f))
         except IOError as exc:
-            logger.debug('Got %s while getting config settings for %s', exc, os.path.basename(f))
+            logger.debug(
+                'Got %s while getting config settings for %s',
+                exc, os.path.basename(f)
+            )
             continue
         if conf.key_max_column_width() > max_width:
             max_width = conf.key_max_column_width()
         configs.append(conf)
     for conf in configs:
-        conf.print_settings(setting_filter=setting_filter, key_column_width=max_width, info=info)
+        conf.print_settings(
+            setting_filter=setting_filter,
+            key_column_width=max_width,
+            info=info
+        )
