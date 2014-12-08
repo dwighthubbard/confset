@@ -25,18 +25,7 @@ class ConfigSettings(object):
     """
 
     def __init__(self, conffile=None):
-        global CONF_PATH
-        self.confpath = CONF_PATH
-        self.in_virtualenv = False
-        if hasattr(sys, 'real_prefix') and 'VIRTUAL_ENV' in os.environ.keys():
-            self.in_virtualenv = True
-            self.confpath.insert(
-                0,
-                os.path.join(
-                    os.environ['VIRTUAL_ENV'],
-                    'conf'
-                )
-            )
+        self.confpath = config_paths()
         self.conffile = conffile
         self.filename = self.search_for_conf(conffile)
         self.settings, self.order = self.available_settings()
@@ -185,16 +174,34 @@ class ConfigSettings(object):
         fh.close()
 
 
+def config_paths():
+    """
+    Get a list of configuration paths
+    :return:
+    """
+    global CONF_PATH
+    confpath = CONF_PATH
+    if hasattr(sys, 'real_prefix') and 'VIRTUAL_ENV' in os.environ.keys():
+        confpath.insert(
+            0,
+            os.path.join(
+                os.environ['VIRTUAL_ENV'],
+                'conf'
+            )
+        )
+    return confpath
+
 def config_files():
     """
-
-
+    Find all config files
     :return:
     """
     files = []
-    for directory in CONF_PATH:
+    for directory in config_paths():
         if os.path.isdir(directory):
-            files += os.listdir(directory)
+            for f in os.listdir(directory):
+                if '.confset.' not in f:
+                    files.append(f)
     return files
 
 
@@ -221,7 +228,7 @@ def settings():
 
 def print_settings(setting_filter=None, info=False):
     """
-
+    Print settings found
     :param setting_filter:
     :param info:
     """
