@@ -143,12 +143,14 @@ class ConfigSettings(object):
                     if self.settings[setting]['value']:
                         print(setting_and_value)
 
-    def set(self, key, value):
+    def set(self, key, value, help=None):
         """
         Set a setting in a conf file
         :param key:
         :param value
         """
+        if not help:
+            help = []
         if not self.filename:
             self.filename = self.empty_conf_file()
         if os.path.exists(self.filename):
@@ -166,12 +168,22 @@ class ConfigSettings(object):
                 # noinspection PyUnusedLocal
                 tvalue = line.strip().split('=')[1].strip()
                 if key == tkey:
-                    line = '%s=%s\n' % (key, value)
+                    line = ''
+                    if help:
+                        line = '# %s\n' % help
+                    line += '%s=%s\n' % (key, value)
                     changed = True
             fh.write(line)
         if not changed:
             fh.write('%s=%s\n' % (key, value))
-            self.settings.update({key: value})
+
+        self.settings.update(
+            {
+                '%s.%s' % (self.conffile, key): {
+                    'help': help,
+                    'value': value}
+            }
+        )
         fh.close()
 
 
