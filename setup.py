@@ -5,7 +5,7 @@ Package configuration for confset module and utility
 from distutils.core import setup
 #noinspection PyStatementEffect
 """
- Copyright (c) 2012, 2013 Dwight Hubbard. All rights reserved.
+ Copyright (c) 2012-2014 Dwight Hubbard. All rights reserved.
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -21,7 +21,7 @@ from distutils.core import setup
 
 setup(
     name="confset",
-    version="0.0.8",
+    version="0.0.9",
     author="Dwight Hubbard",
     author_email="d@d-h.us",
     url="http://computing.dwighthubbard.info",
