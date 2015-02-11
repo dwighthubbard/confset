@@ -204,6 +204,7 @@ def config_paths():
         )
     return confpath
 
+
 def config_files():
     """
     Find all config files
