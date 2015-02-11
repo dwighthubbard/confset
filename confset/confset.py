@@ -41,7 +41,7 @@ class ConfigSettings(object):
         filename = None
         for d in self.confpath:
             filename = os.path.join(d, self.conffile)
-            if os.path.isfile(filename):
+            if os.path.isfile(filename) and os.access(filename, os.R_OK):
                 break
             else:
                 filename = None
