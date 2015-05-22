@@ -34,3 +34,5 @@ nosetests.xml
 .pydevproject
 
 *~
+confset/package_metadata.json
+

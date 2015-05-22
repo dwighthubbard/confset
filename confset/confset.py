@@ -90,6 +90,36 @@ class ConfigSettings(object):
                     comments = []
         return result_settings, order
 
+    def write_settings(self):
+        """
+        Commit the current self.settings to disk
+        :return:
+        """
+        if self.filename:
+            if os.path.exists(self.filename):
+                newname = '%s.confset.%s' % (self.filename, time.strftime("%Y%m%d%H%M%S"))
+                logger.debug(
+                    'Backing up existing config file: %s to %s', self.filename, newname
+                )
+                shutil.copy(self.filename, newname)
+        else:
+            self.filename = self.empty_conf_file()
+        logger.debug('Writing to: %s', self.filename)
+        if self.filename:
+            with open(self.filename, 'w') as file_handle:
+                for long_key in self.order:
+                    short_key = '.'.join(long_key.split('.')[1:])
+                    value = self.settings[long_key].get('value', '')
+                    help_text = self.settings[long_key].get('help', [])
+                    if isinstance(help_text, str):
+                        help_text = help_text.split(os.linesep)
+                    logger.debug('Writing: %s=%s' % (short_key, value))
+                    if help_text:
+                        file_handle.write('\n')
+                        for line in help_text:
+                            file_handle.write('# %s\n' % line.strip())
+                    file_handle.write('{0}={1}\n\n'.format(short_key, value))
+
     def key_max_column_width(self):
         """
         Determine the max length of the key names
@@ -150,51 +180,22 @@ class ConfigSettings(object):
         :param key:
         :param value
         """
-        if not help_text:
-            help_text = []
-        elif isinstance(help_text, str):
-            help_text = help_text.split('\n')
-        if not self.filename:
-            self.filename = self.empty_conf_file()
-        if os.path.exists(self.filename):
-            shutil.copy(self.filename, '%s.confset.%s' % (
-                self.filename, time.strftime("%Y%m%d%H%M%S"))
-            )
-            with open(self.filename) as file_handle:
-                data = file_handle.readlines()
-        else:
-            data = []
-        changed = False
-        with open(self.filename, 'w') as fh:
-            for line in data:
-                if not line.strip().startswith('#') and '=' in line:
-                    tkey = line.strip().split('=')[0].strip()
-                    # noinspection PyUnusedLocal
-                    tvalue = line.strip().split('=')[1].strip()
-                    if key == tkey:
-                        line = ''
-                        if help_text:
-                            line = '\n'
-                            for help_line in help_text:
-                                line += '# ' + help_line.strip() + '\n'
-                        line += '%s=%s\n' % (key, value)
-                        changed = True
-                fh.write(line)
-            if not changed:
-                if help_text:
-                    for help_line in help_text:
-                        fh.write('# '+help_line.strip()+'\n')
-                fh.write('%s=%s\n' % (key, value))
-
+        logger.debug('Setting variable, before: %s', self.settings)
+        long_key = '%s.%s' % (self.conffile, key)
+        if isinstance(help_text, str):
+            help_text = help_text.split(os.linesep)
         self.settings.update(
             {
-                '%s.%s' % (self.conffile, key): {
+                long_key: {
                     'help': help_text,
                     'value': value
                 }
             }
         )
-
+        logger.debug('Setting variable, after: %s', self.settings)
+        if long_key not in self.order:
+            self.order.append(long_key)
+        self.write_settings()
 
 def config_paths():
     """
