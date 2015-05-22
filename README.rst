@@ -139,7 +139,6 @@ configuration file.
                                                     as possible
     $
 
-
 See the settings and current values for the rsyslog daemon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -154,9 +153,11 @@ default configuration file looks like this:
     # See rsyslogd(8) for more details
     RSYSLOGD_OPTIONS=""
 
+
 We can see by looking at the file above it only has a single configuration
 setting (RSYSLOGD_OPTIONS).  We can display the settings from this file
 using confset like this:
+
 
 .. code-block::
 
@@ -166,7 +167,9 @@ using confset like this:
                                   See rsyslogd(8) for more details
     $
 
+
 To disable DNS lookups, using confset we would run the following command:
+
 
 .. code-block::
 
@@ -175,6 +178,7 @@ To disable DNS lookups, using confset we would run the following command:
 
 
 Now if we look at the configuration file the setting is at the new value.
+
 
 .. code-block::
 
@@ -195,8 +199,12 @@ Using confset from python
 
 Here are some simple examples of using the confset python module.
 
+
 Getting all system settings as a dictionary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The confset settings function can be used to access all system settings
+as a dictionary.
 
 .. code-block:: python
 
@@ -208,11 +216,13 @@ Getting all system settings as a dictionary
 Changing the ryslog RSYSLOGD_OPTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Here's a simple example of changing a configuration setting using python.
+
 .. code-block:: python
 
->>> rsyslog_settings = confset.ConfigSettings('rsyslog')
->>> rsyslog_settings.set('RSYSLOGD_OPTIONS', '"-x"')
->>> rsyslog_settings.print_settings()
-rsyslog.RSYSLOGD_OPTIONS="-x"
->>>
+    >>> rsyslog_settings = confset.ConfigSettings('rsyslog')
+    >>> rsyslog_settings.set('RSYSLOGD_OPTIONS', '"-x"')
+    >>> rsyslog_settings.print_settings()
+    rsyslog.RSYSLOGD_OPTIONS="-x"
+    >>>
 
