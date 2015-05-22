@@ -108,8 +108,6 @@ if __name__ == "__main__":
             'Intended Audience :: Developers',
             'Intended Audience :: System Administrators',
             'Intended Audience :: Information Technology',
-            'License :: OSI Approved :: Apache License',
-            'Natural Language :: English',
             'Operating System :: POSIX',
             'Operating System :: POSIX :: Linux',
             'Operating System :: MacOS :: MacOS X',
