@@ -215,3 +215,4 @@ Changing the ryslog RSYSLOGD_OPTIONS
 >>> rsyslog_settings.print_settings()
 rsyslog.RSYSLOGD_OPTIONS="-x"
 >>>
+
