@@ -143,48 +143,57 @@ class ConfigSettings(object):
                     if self.settings[setting]['value']:
                         print(setting_and_value)
 
-    def set(self, key, value, help=None):
+    def set(self, key, value, help_text=None):
         """
         Set a setting in a conf file
+        :type help_text: list
         :param key:
         :param value
         """
-        if not help:
-            help = []
+        if not help_text:
+            help_text = []
+        elif isinstance(help_text, str):
+            help_text = help_text.split('\n')
         if not self.filename:
             self.filename = self.empty_conf_file()
         if os.path.exists(self.filename):
             shutil.copy(self.filename, '%s.confset.%s' % (
                 self.filename, time.strftime("%Y%m%d%H%M%S"))
             )
-            data = open(self.filename, 'r').readlines()
+            with open(self.filename) as file_handle:
+                data = file_handle.readlines()
         else:
             data = []
         changed = False
-        fh = open(self.filename, 'w')
-        for line in data:
-            if not line.strip().startswith('#') and '=' in line:
-                tkey = line.strip().split('=')[0].strip()
-                # noinspection PyUnusedLocal
-                tvalue = line.strip().split('=')[1].strip()
-                if key == tkey:
-                    line = ''
-                    if help:
-                        line = '# %s\n' % help
-                    line += '%s=%s\n' % (key, value)
-                    changed = True
-            fh.write(line)
-        if not changed:
-            fh.write('%s=%s\n' % (key, value))
+        with open(self.filename, 'w') as fh:
+            for line in data:
+                if not line.strip().startswith('#') and '=' in line:
+                    tkey = line.strip().split('=')[0].strip()
+                    # noinspection PyUnusedLocal
+                    tvalue = line.strip().split('=')[1].strip()
+                    if key == tkey:
+                        line = ''
+                        if help_text:
+                            line = '\n'
+                            for help_line in help_text:
+                                line += '# ' + help_line.strip() + '\n'
+                        line += '%s=%s\n' % (key, value)
+                        changed = True
+                fh.write(line)
+            if not changed:
+                if help_text:
+                    for help_line in help_text:
+                        fh.write('# '+help_line.strip()+'\n')
+                fh.write('%s=%s\n' % (key, value))
 
         self.settings.update(
             {
                 '%s.%s' % (self.conffile, key): {
-                    'help': help,
-                    'value': value}
+                    'help': help_text,
+                    'value': value
+                }
             }
         )
-        fh.close()
 
 
 def config_paths():
