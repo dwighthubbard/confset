@@ -182,6 +182,9 @@ class ConfigSettings(object):
         """
         logger.debug('Setting variable, before: %s', self.settings)
         long_key = '%s.%s' % (self.conffile, key)
+        if not help_text:
+            if long_key in self.settings.keys():
+                help_text = self.settings[long_key].get('help', [])
         if isinstance(help_text, str):
             help_text = help_text.split(os.linesep)
         self.settings.update(
