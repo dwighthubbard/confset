@@ -174,7 +174,7 @@ default configuration file looks like this:
     # See rsyslogd(8) for more details
     RSYSLOGD_OPTIONS=""
 
-We can see by locking at the file above it only has a single configuration
+We can see by looking at the file above it only has a single configuration
 setting (RSYSLOGD_OPTIONS).  We can display the settings from this file
 using confset like this:
 
