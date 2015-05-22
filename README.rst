@@ -1,11 +1,16 @@
 confset
 *******
 
+.. image:: https://travis-ci.org/dwighthubbard/confset.svg?branch=master
+    :target: https://travis-ci.org/dwighthubbard/confset
+
 Set and view values for package default settings from the command line.
 
 Using confset from the command line
 ===================================
 
+Here are some simple examples of using the confset command from the
+command line.
 
 See the settings and current values for the kerneloops daemon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
