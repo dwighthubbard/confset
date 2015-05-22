@@ -162,7 +162,7 @@ See the settings and current values for the rsyslog daemon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here's an example of modifying the rsyslog daemon configuration file.  On
-Ubuntu this configuration is stored in the file __/etc/default/rsyslog__ .  The
+Ubuntu this configuration is stored in the file /etc/default/rsyslog.  The
 default configuration file looks like this:
 
 .. code-block::
