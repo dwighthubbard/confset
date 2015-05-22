@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Copyright (c) 2012-2015, Dwight Hubbard.
+# Copyrights licensed under the Apache 2.0 License
+# See the accompanying LICENSE.txt file for terms.
 """
 Manage package settings
 """
