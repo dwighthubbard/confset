@@ -36,3 +36,7 @@ nosetests.xml
 *~
 confset/package_metadata.json
 
+# CI Pipeline artifacts
+nosetests.xml
+cobertura.xml
+
