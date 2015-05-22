@@ -62,7 +62,7 @@ configuration file.
 
 .. code-block::
 
-    $ confset
+    $ confset --info
     console-setup.VERBOSE_OUTPUT="no"
     console-setup.ACTIVE_CONSOLES="/dev/tty[1-6]"
     console-setup.CHARMAP="UTF-8"
