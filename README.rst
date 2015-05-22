@@ -28,6 +28,7 @@ Running confset without arguments will show all configuration
 settings on the system.
 
 .. code-block::
+
     $ confset
     console-setup.VERBOSE_OUTPUT="no"
     console-setup.ACTIVE_CONSOLES="/dev/tty[1-6]"
@@ -60,6 +61,7 @@ any comment or help text associated with the setting in the
 configuration file.
 
 .. code-block::
+
     $ confset
     console-setup.VERBOSE_OUTPUT="no"
     console-setup.ACTIVE_CONSOLES="/dev/tty[1-6]"
