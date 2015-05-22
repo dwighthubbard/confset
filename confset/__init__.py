@@ -60,7 +60,7 @@ _metadata_file = os.path.join(
 if os.path.exists(_metadata_file):  # pragma: no cover
     with open(_metadata_file) as _file_handle:
         _package_metadata = json.load(_file_handle)
-else:
+else:  # pragma: no cover
     _package_metadata = {
         'version': '0.0.0'
     }

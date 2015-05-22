@@ -57,7 +57,7 @@ class ConfigSettings(object):
                 return os.path.join(d, self.conffile)
         raise ConfsetException(
             'Unable to find a writable configuration directory'
-        )
+        )   # pragma: no cover
 
     def available_settings(self):
         """
