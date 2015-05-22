@@ -162,10 +162,11 @@ See the settings and current values for the rsyslog daemon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here's an example of modifying the rsyslog daemon configuration file.  On
-Ubuntu this configuration is stored in the file _/etc/default/rsyslog_.  The
+Ubuntu this configuration is stored in the file _/etc/default/rsyslog_ .  The
 default configuration file looks like this:
 
 .. code-block::
+
     # Options for rsyslogd
     # -x disables DNS lookups for remote messages
     # See rsyslogd(8) for more details
@@ -211,7 +212,6 @@ Using confset from python
 =========================
 
 Here are some simple examples of using the confset python module.
-
 
 Getting all system settings as a dictionary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
