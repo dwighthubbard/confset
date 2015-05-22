@@ -63,27 +63,6 @@ configuration file.
 .. code-block::
 
     $ confset --info
-    console-setup.VERBOSE_OUTPUT="no"
-    console-setup.ACTIVE_CONSOLES="/dev/tty[1-6]"
-    console-setup.CHARMAP="UTF-8"
-    console-setup.CODESET="Uni2"
-    console-setup.FONTFACE="Fixed"
-    console-setup.FONTSIZE="16"
-    devpts.TTYGRP=5
-    devpts.TTYMODE=620
-    halt.HALT=poweroff
-    keyboard.XKBMODEL="pc105"
-    keyboard.XKBLAYOUT="us"
-    keyboard.XKBVARIANT=""
-    keyboard.XKBOPTIONS=""
-    nss.ADJUNCT_AS_SHADOW=TRUE
-    ntpdate.NTPDATE_USE_NTP_CONF=yes
-    ntpdate.NTPSERVERS="ntp.ubuntu.com"
-    ntpdate.NTPOPTIONS=""
-    rcS.UTC=yes
-    rsyslog.RSYSLOGD_OPTIONS=""
-    useradd.SHELL=/bin/sh
-    $ confset --info
     console-setup.VERBOSE_OUTPUT="no"             - Change to "yes" and setupcon will explain what is being doing
     console-setup.ACTIVE_CONSOLES="/dev/tty[1-6]" - Setup these consoles.  Most people do not need to change this.
     console-setup.CHARMAP="UTF-8"                 - Put here your encoding.  Valid charmaps are: UTF-8 ARMSCII-8 CP1251
@@ -159,6 +138,7 @@ configuration file.
                                                     useradd is a low level utility and should be as general
                                                     as possible
     $
+
 
 See the settings and current values for the rsyslog daemon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
