@@ -206,18 +206,21 @@ class ConfigSettings(object):
 def config_paths():
     """
     Get a list of configuration paths
-    :return:
+
+    Returns
+    list
+        A list of strings containing full paths to the directories containing
+        configuration files.
     """
     global CONF_PATH
     confpath = CONF_PATH
     if hasattr(sys, 'real_prefix') and 'VIRTUAL_ENV' in os.environ.keys():
-        confpath.insert(
-            0,
-            os.path.join(
-                os.environ['VIRTUAL_ENV'],
-                'conf'
+        venv_path = os.path.join(os.environ['VIRTUAL_ENV'], 'conf')
+        if confpath[0] != venv_path:
+            confpath.insert(
+                0,
+                venv_path
             )
-        )
     return confpath
 
 
