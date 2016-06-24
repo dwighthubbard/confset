@@ -58,7 +58,9 @@ class TestConfset(unittest.TestCase):
 
         # Set a value in the new config file
         config = confset.ConfigSettings(self.config_file)
-        config.set('test', 'value', help_text=['Really long', 'Helpful comment'])
+        config.set(
+            'test', 'value', help_text=['Really long', 'Helpful comment']
+        )
 
         # New config file exists
         self.assertTrue(os.path.exists(self.config_file_full))
@@ -68,7 +70,10 @@ class TestConfset(unittest.TestCase):
             result = file_handle.read()
             print(result)
             self.assertIn('test=value', result, "Config setting is missing")
-            self.assertIn('# Really long\n# Helpful comment', result, "Help comment missing")
+            self.assertIn(
+                '# Really long\n# Helpful comment', result,
+                "Help comment missing"
+            )
 
     def test_config_update_setting(self):
         self.test_config_create_setting()
@@ -79,10 +84,21 @@ class TestConfset(unittest.TestCase):
         with open(self.config_file_full) as file_handle:
             result = file_handle.read()
             print(result)
-            self.assertNotIn('test=value\n', result, "Old config setting still in config file")
+            self.assertNotIn(
+                'test=value\n',
+                result,
+                "Old config setting still in config file"
+            )
             self.assertIn('test=valuenew', result, "Config setting is missing")
-            self.assertIn('# New Helpful comment', result, "Help comment missing")
+            self.assertIn(
+                '# New Helpful comment', result, "Help comment missing"
+            )
             self.assertIn('test2=test2', result, "Second setting missing")
+
+    def test_confset_config_paths_no_growth(self):
+        inital_paths = confset.confset.config_paths()
+        second_paths = confset.confset.config_paths()
+        self.assertEqual(len(inital_paths), len(second_paths))
 
 
 if __name__ == '__main__':

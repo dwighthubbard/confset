@@ -133,5 +133,5 @@ if __name__ == "__main__":
         requires=['configobj'],
         scripts=['bin/confset'],
         url="http://github.com/dwighthubbard/confset",
-        version=metadata['version'],
+        version='0.0.1',
     )
