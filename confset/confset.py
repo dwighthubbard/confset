@@ -52,15 +52,15 @@ class ConfigSettings(object):
 
     def empty_conf_file(self):
         """
-        Return a fully filename
-        :return:
+        Return a fully filename. If conffile does not exist, it will create a conffile automatically
+        :return: (str) conf file full path
         """
         for d in self.confpath:
             if os.path.isdir(d) and os.access(d, os.W_OK):
                 return os.path.join(d, self.conffile)
-        raise ConfsetException(
-            'Unable to find a writable configuration directory'
-        )   # pragma: no cover
+        # create conf file if not exist
+        with open(os.path.join(self.confpath[-1], self.conffile), 'w+') as f:
+            return os.path.join(self.confpath[-1], self.conffile)
 
     def available_settings(self):
         """
