@@ -234,7 +234,7 @@ class TestConfsetArguments(unittest.TestCase):
     def test_invalid_arguments(self):
         """
         Test all invalid commands. Any command from here should all raise sys.exit(1)
-        :return: 
+        :return:
         """
         cmd = '.test_attr'
         with self.assertRaises(SystemExit) as cm:
@@ -288,26 +288,10 @@ class TestConfsetArguments(unittest.TestCase):
 
         self.assertEqual(cm.exception.code, 1)
 
-        '''
-        cmd = 'test_name.test_attr=test value missing quotes'
-        with self.assertRaises(SystemExit) as cm:
-            (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
-
-        self.assertEqual(cm.exception.code, 1)
-
-        cmd = 'test_name.test_attr="test value missing invalid quotes\''
-        with self.assertRaises(SystemExit) as cm:
-            (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
-
-        self.assertEqual(cm.exception.code, 1)
-        '''
-
         cmd = 'test_name.test_attr test_name1.test_attr1'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 

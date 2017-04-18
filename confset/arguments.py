@@ -4,6 +4,7 @@ import sys
 import confset
 import optparse
 
+
 def create_arg_parser():
     parser = optparse.OptionParser(usage='confset [setting]|[setting=value]')
     parser.add_option('--info', default=False, action='store_true', help='Print help information for options')
@@ -16,7 +17,7 @@ class ConfsetArguments(object):
         """
         Initial method for ConfsetArgument which will be called by bin/confset
         :param args: (list) List of arguments
-        :param options: (object) argument option opject 
+        :param options: (object) argument option object
         """
         self.args = self.parse_arguments(args)
         self.arg_options = options
@@ -28,25 +29,25 @@ class ConfsetArguments(object):
     def __get_confset(self):
         """
         A private method for getting the correct confset object based on the passed arguments.
-        
+
         If self.name and self.attr (e.g: `confset name.attr`):
             return confset.ConfigSettings('name.attr')
-            
+
         else if only has self.name (e.g: `confset name`):
             return confset.ConfigSettings('name')
-        
+
         else (e.g: `confset`):
             return confset
-        
+
         :return: (object) confset object
         """
-        res = confset if self.name == None else confset.ConfigSettings(self.name)
+        res = confset if self.name is None else confset.ConfigSettings(self.name)
         return res
 
     def parse_arguments(self, args=None):
         """
         Parse the confset arguments which provided by user and verify it
-        
+
         **Valid arguments**
             ```
             $ confset
@@ -56,7 +57,7 @@ class ConfsetArguments(object):
             $ confset name.attr="value with space"
             $ confset name.attr=value_without_space
             ```
-            
+
         **Invalid arguments**
             ```
             $ confset .name
@@ -67,14 +68,14 @@ class ConfsetArguments(object):
             $ confset name.attr=value name.attr1=value
             $ confset name.attr=value; name.attr1=value
             ```
-        
+
         :param args: (list) List of arguments
         :return: (dict) Parsed argument with dictionary type, e.g:
             ```
             {
                 'namespace': <str | None>,
                 'attribute': <str | None>,
-                'value': <str | None>,   
+                'value': <str | None>,
             }
             ```
         """
@@ -82,7 +83,7 @@ class ConfsetArguments(object):
         rgx_p = r'^(?P<namespace>[a-zA-Z0-9\-\_]+)(\.(?P<attribute>[a-zA-Z0-9\-\_]+))?(=(?P<value>.*))?$'
         rgx_m = re.match(rgx_p, args)
         res = rgx_m.groupdict() if rgx_m else {'namespace': None, 'attribute': None, 'value': None}
-        if (args and not rgx_m) or (res['value'] != None and (not res['namespace'] or not res['attribute'])):
+        if (args and not rgx_m) or (res['value'] is None and (not res['namespace'] or not res['attribute'])):
             print(
                 'Incorrect command. The proper confset command should be:',
                 '  $ confset name.attr=value',
@@ -95,7 +96,7 @@ class ConfsetArguments(object):
         """
         Get conf filter based on the conf name and attribute
         :return: (str)
-        
+
             if user provides conf name and attribute:
                 filter = 'name.attribute'
             else:
@@ -106,10 +107,10 @@ class ConfsetArguments(object):
 
     def execute(self):
         """
-        Execute the actual confset command based on the args. 
+        Execute the actual confset command based on the args.
         :return: N/A
         """
-        if self.name and self.attr and self.value != None:
+        if self.name and self.attr and self.value is not None:
             self.confset.set(self.attr, self.value)
 
         self.confset.print_settings(
