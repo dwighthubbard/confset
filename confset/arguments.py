@@ -99,14 +99,14 @@ class ConfsetArguments(object):
         
             | verified | namespace | attribute | value |
             |----------|-----------|-----------|-------|
-            |   True   |     ●     |     ●     |   ●   |
-            |   True   |     ●     |     ●     |   -   |
-            |   True   |     ●     |     -     |   -   |
+            |   True   |     Y     |     Y     |   Y   |
+            |   True   |     Y     |     Y     |   -   |
+            |   True   |     Y     |     -     |   -   |
             |   True   |     -     |     -     |   -   |
-            |   False  |     -     |     ●     |   -   |
-            |   False  |     -     |     -     |   ●   |
-            |   False  |     -     |     ●     |   ●   |
-            |   False  |     ●     |     -     |   ●   |
+            |   False  |     -     |     Y     |   -   |
+            |   False  |     -     |     -     |   Y   |
+            |   False  |     -     |     Y     |   Y   |
+            |   False  |     Y     |     -     |   Y   |
             
         :param data: (dict) Parsed arguments, e.g:
             {
