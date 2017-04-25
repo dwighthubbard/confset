@@ -239,52 +239,52 @@ class TestConfsetArguments(unittest.TestCase):
         cmd = '.test_attr'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 
         cmd = '.test_attr=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 
         cmd = '=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 
         cmd = 'test_name=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 
         cmd = 'test_name.name.attr=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 
         cmd = 'test name.test_attr=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         cmd = 'test%name.test_attr=test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         cmd = 'test_name.test_attr = test_value'
         with self.assertRaises(SystemExit) as cm:
             (options, args) = self.parser.parse_args(cmd.split(' '))
-            _ = ConfsetArguments(args, options)
+            ConfsetArguments(args, options)
 
         self.assertEqual(cm.exception.code, 1)
 

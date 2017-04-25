@@ -83,7 +83,7 @@ class ConfsetArguments(object):
         rgx_p = r'^(?P<namespace>[a-zA-Z0-9\-\_]+)(\.(?P<attribute>[a-zA-Z0-9\-\_]+))?(=(?P<value>.*))?$'
         rgx_m = re.match(rgx_p, args)
         res = rgx_m.groupdict() if rgx_m else {'namespace': None, 'attribute': None, 'value': None}
-        if (args and not rgx_m) or (res['value'] is None and (not res['namespace'] or not res['attribute'])):
+        if (args and not rgx_m) or not self.verify_arguments(res):
             print(
                 'Incorrect command. The proper confset command should be:',
                 '  $ confset name.attr=value',
@@ -91,6 +91,38 @@ class ConfsetArguments(object):
             )
             sys.exit(1)
         return res
+
+    @staticmethod
+    def verify_arguments(data):
+        """
+        Verify arguments. Here is the verified logic:
+        
+            | verified | namespace | attribute | value |
+            |----------|-----------|-----------|-------|
+            |   True   |     √     |     √     |   √   |
+            |   True   |     √     |     √     |   -   |
+            |   True   |     √     |     -     |   -   |
+            |   True   |     -     |     -     |   -   |
+            |   False  |     -     |     √     |   -   |
+            |   False  |     -     |     -     |   √   |
+            |   False  |     -     |     √     |   √   |
+            |   False  |     √     |     -     |   √   |
+            
+        :param data: (dict) Parsed arguments, e.g:
+            {
+                'namespace': 'user',
+                'attribute': 'Name,
+                'value': 'Eva'
+            }
+        :return: (bool) Arguments verified result
+        """
+        if data['value']:
+            if not data['namespace'] or not data['attribute']:
+                return False
+        else:
+            if not data['namespace'] and data['attribute']:
+                return False
+        return True
 
     def get_filters(self):
         """
