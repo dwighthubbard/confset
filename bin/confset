@@ -3,47 +3,12 @@
 View and Set configuration file parameters
 """
 import sys
-import confset
-import optparse
-
-
-def usage():
-    """
-    Display a usage message and exit
-    :return:
-    """
-    print('confset conffile.parameter=value')
-    sys.exit(1)
-
+from confset.arguments import ConfsetArguments, create_arg_parser
 
 if __name__ == '__main__':
-    parser = optparse.OptionParser(usage='confset [setting]|[setting=value]')
-    parser.add_option('--info', default=False, action='store_true', help='Print help information for options')
+    parser = create_arg_parser()
     (options, args) = parser.parse_args()
-    args = ' '.join(args)
-    setting_filter = None
+    confset = ConfsetArguments(args, options)
 
-    if args:
-        if '.' not in args:
-            configs = confset.ConfigSettings(args)
-        else:
-            conffile = args.split('.')[0]
-            setting_filter = args.split('.')[1]
-            configs = confset.ConfigSettings(conffile)
-    else:
-        confset.print_settings(info=options.info)
-        sys.exit(0)
-
-    if '=' not in args:
-        #noinspection PyUnboundLocalVariable
-        configs.print_settings(setting_filter=setting_filter, info=options.info)
-        sys.exit(0)
-
-    if '.' not in args:
-        usage()
-
-    key = ''.join(args.split('.')[1:]).split('=')[0].strip()
-    value = '.'.join(args.split('.')[1:]).split('=')[1].strip()
-    #noinspection PyUnboundLocalVariable
-    configs.set(key, value)
+    confset.execute()
     sys.exit(0)
