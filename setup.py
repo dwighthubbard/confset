@@ -131,7 +131,6 @@ if __name__ == "__main__":
             'confset': ['package_metadata.json']
         },
         requires=['configobj'],
-        scripts=['bin/confset'],
         url="http://github.com/dwighthubbard/confset",
         version=metadata['version'],
     )
