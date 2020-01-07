@@ -5,6 +5,7 @@
 """
 Manage package settings
 """
+import copy
 import os
 import sys
 import shutil
@@ -213,14 +214,12 @@ def config_paths():
         configuration files.
     """
     global CONF_PATH
-    confpath = CONF_PATH
-    if hasattr(sys, 'real_prefix') and 'VIRTUAL_ENV' in os.environ.keys():
+    confpath = copy.copy(CONF_PATH)
+    if 'VIRTUAL_ENV' in os.environ.keys():
         venv_path = os.path.join(os.environ['VIRTUAL_ENV'], 'conf')
-        if confpath[0] != venv_path:
-            confpath.insert(
-                0,
-                venv_path
-            )
+        if os.path.exists(venv_path):
+            if confpath[0] != venv_path:
+                confpath.insert(0, venv_path)
     return confpath
 
 
