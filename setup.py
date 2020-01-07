@@ -20,7 +20,7 @@ def readme():
 
 
 class Git(object):
-    version_list = ['0', '7', '0']
+    version_list = ['0', '8', '0']
 
     def __init__(self, version=None):
         if version:
@@ -131,7 +131,6 @@ if __name__ == "__main__":
             'confset': ['package_metadata.json']
         },
         requires=['configobj'],
-        scripts=['bin/confset'],
         url="http://github.com/dwighthubbard/confset",
         version=metadata['version'],
     )
