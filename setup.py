@@ -20,7 +20,7 @@ def readme():
 
 
 class Git(object):
-    version_list = ['0', '8', '0']
+    version_list = ['0', '9', '0']
 
     def __init__(self, version=None):
         if version:
@@ -96,7 +96,7 @@ def get_and_update_metadata(version=None):
 
 
 if __name__ == "__main__":
-    metadata = get_and_update_metadata('0.0.35')
+    metadata = get_and_update_metadata('0.1.0')
 
     setup(
         name="confset",
