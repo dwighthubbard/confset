@@ -14,11 +14,6 @@ from setuptools import setup
 METADATA_FILENAME = 'confset/package_metadata.json'
 
 
-def readme():
-    with open('README.rst') as f:
-        return f.read()
-
-
 class Git(object):
     version_list = ['0', '9', '0']
 
@@ -99,30 +94,6 @@ if __name__ == "__main__":
     metadata = get_and_update_metadata('0.1.0')
 
     setup(
-        name="confset",
-        author="Dwight Hubbard",
-        author_email="d@d-h.us",
-        classifiers=[
-            'Development Status :: 5 - Production/Stable',
-            'Environment :: Console',
-            'Intended Audience :: Developers',
-            'Intended Audience :: System Administrators',
-            'Intended Audience :: Information Technology',
-            'Operating System :: POSIX',
-            'Operating System :: POSIX :: Linux',
-            'Operating System :: MacOS :: MacOS X',
-            'Operating System :: POSIX :: BSD :: FreeBSD',
-            'Operating System :: POSIX :: SunOS/Solaris',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.4',
-            'Programming Language :: Python :: Implementation :: CPython',
-            'Programming Language :: Python',
-            'Topic :: System :: Systems Administration',
-            'Topic :: Utilities',
-            'Topic :: Software Development :: Libraries :: Python Modules',
-        ],
         description="A simple script to change or update package configurations",
         license="Apache 2.0",
         long_description=open('README.rst').read(),
@@ -131,6 +102,4 @@ if __name__ == "__main__":
             'confset': ['package_metadata.json']
         },
         requires=['configobj'],
-        url="http://github.com/dwighthubbard/confset",
-        version=metadata['version'],
     )
